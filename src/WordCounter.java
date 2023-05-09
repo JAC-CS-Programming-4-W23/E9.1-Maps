@@ -68,6 +68,43 @@ public class WordCounter {
     }
 
     /**
+     * Read the content of the file and count the words. Removes punctuation and does not count stop words.
+     *
+     * @param fileName
+     */
+    public void countWordsInFile(String fileName) {
+        Scanner scanner = scanFile(fileName);
+        scanner.useDelimiter("[\\p{Punct}\\s]+");
+
+        while (scanner.hasNext()) {
+            String word = scanner.next();
+            word = word.toLowerCase();
+
+            if (wordCount.containsKey(word)) {
+                wordCount.put(word, wordCount.get(word) + 1);
+            }
+            else {
+                wordCount.put(word, 1);
+            }
+        }
+
+        stopWords.reset();
+
+        while (stopWords.hasNext()) {
+            wordCount.remove(stopWords.next());
+        }
+    }
+
+    /**
+     * Read the content of the URL and count the words. Removes punctuation and does not count stop words.
+     *
+     * @param url
+     */
+    public void countWordsInUrl(String url) {
+
+    }
+
+    /**
      * Return all words counted, not including stop words
      *
      * @return
@@ -88,33 +125,25 @@ public class WordCounter {
     }
 
     /**
-     * Read the content of the file and count the words. Removes punctuation and does not count stop words.
-     *
-     * @param fileName
-     */
-    public void countWordsInFile(String fileName) {
-        // TODO
-    }
-
-    /**
-     * Read the content of the URL and count the words. Removes punctuation and does not count stop words.
-     *
-     * @param url
-     */
-    public void countWordsInUrl(String url) {
-        // TODO
-    }
-
-    /**
      * Return the words that appear n times or more in the count.
      *
      * @param n
      * @return
      */
     public Set<String> popularWords(int n) {
-        // TODO
+        Set<String> results = new SimpleSet<>(wordCount.size());
 
-        return null;
+        wordCount.reset();
+
+        while (wordCount.hasNext()) {
+            Entry<String, Integer> e = wordCount.next();
+
+            if (e.getValue() >= n) {
+                results.add(e.getKey());
+            }
+        }
+        
+        return results;
     }
 
 }
